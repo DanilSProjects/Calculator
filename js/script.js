@@ -13,7 +13,7 @@ calculatorButtons.forEach((button) => {
 function updateDisplay(e) {
     let buttonEntered = e.target.textContent;
 
-    if (/[\^+\-*\/]/.test(buttonEntered)) {
+    if (/[+\-x÷]/.test(buttonEntered) || /(xʸ)/.test(buttonEntered)) {
         if (isRecentlyDeleted) {
             isRecentlyDeleted = false;
         } else {
@@ -48,7 +48,7 @@ function updateDisplay(e) {
             display.textContent = displayText;
             break;
         case "Delete":
-            if (/[+\-*\/]/.test(display.textContent)) {
+            if (/[+\-x÷]/.test(display.textContent) || /(xʸ)/.test(display.textContent)) {
                 isRecentlyDeleted = true;
                 currentOperation.pop();
                 console.log(currentOperation);
@@ -66,11 +66,11 @@ function operate(first, second, operator) {
             return add(first, second);
         case "-":
             return subtract(first, second);
-        case "*":
+        case "x":
             return multiply(first, second);
-        case "/":
+        case "÷":
             return divide(first, second);
-        case "^":
+        case "xʸ":
             return powerOf(first, second);
         default:
             return "Error"
