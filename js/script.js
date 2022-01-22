@@ -27,11 +27,13 @@ function updateDisplay(e) {
         console.log(currentOperation);
         displayText = "";
     // if a number is entered
-    } else if (/[0-9]/.test(buttonEntered)) {
+    } else if (/[\.0-9]/.test(buttonEntered)) {
         if (isTheAnswer === true) {
             displayText = "";
         }
-        if (currentOperation[1] == "xʸ") {
+        if (buttonEntered === "." && displayText.includes(".")) {
+            // Don't let the user input more periods
+        } else if (currentOperation[1] == "xʸ") {
             exponentialSuperScript += buttonEntered;
             let tagBeginIndex = display.innerHTML.indexOf("<");
             display.innerHTML = display.innerHTML.slice(0, tagBeginIndex) + `<sup>${exponentialSuperScript}</sup>`;
@@ -61,12 +63,14 @@ function updateDisplay(e) {
                 currentOperation.push(Number(displayText));
             }
             console.log(currentOperation);
-            
+
             // Display results + check for lots of decimals, round if needed
             let stringResult = String(operate(currentOperation[0], currentOperation[2], currentOperation[1]));
             let periodIndex = stringResult.indexOf(".");
             let decimals = stringResult.slice(periodIndex);
-            if (Array.from(decimals).length > 2) {
+            if (isNaN(stringResult)) {
+                displayText = "Error";
+            } else if (Array.from(decimals).length > 2) {
                 displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]).toFixed(2);
             } else {
                 displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]);
