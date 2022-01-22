@@ -13,7 +13,7 @@ calculatorButtons.forEach((button) => {
 function updateDisplay(e) {
     let buttonEntered = e.target.textContent;
 
-    if (/[+\-*\/]/.test(buttonEntered)) {
+    if (/[\^+\-*\/]/.test(buttonEntered)) {
         if (isRecentlyDeleted) {
             isRecentlyDeleted = false;
         } else {
@@ -70,6 +70,8 @@ function operate(first, second, operator) {
             return multiply(first, second);
         case "/":
             return divide(first, second);
+        case "^":
+            return powerOf(first, second);
         default:
             return "Error"
     }
@@ -93,5 +95,10 @@ function multiply(first, second) {
 
 function divide(first, second) {
     let output = first / second;
+    return output;
+}
+
+function powerOf(first, second) {
+    let output = first ** second;
     return output;
 }
