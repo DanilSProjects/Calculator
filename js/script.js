@@ -1,7 +1,8 @@
-// DOM selection of display, buttons
+// DOM selection of display, buttons + variable declaration for updateDispaly
 let displayText = "";
 let currentOperation = [];
 let isTheAnswer = false;
+let isRecentlyDeleted = false;
 let display = document.querySelector("#display");
 let calculatorButtons = document.querySelectorAll(".calculator-button");
 calculatorButtons.forEach((button) => {
@@ -12,21 +13,18 @@ calculatorButtons.forEach((button) => {
 function updateDisplay(e) {
     let buttonEntered = e.target.textContent;
 
-    if (buttonEntered === "=") {
-        currentOperation.push(Number(displayText));
-        console.log(currentOperation);
-        displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]);
-        display.textContent = displayText;
-        currentOperation = [];
-        isTheAnswer = true;
-    } else if (/[+\-*\/]/.test(buttonEntered)) {
-        currentOperation.push(Number(displayText));
+    if (/[+\-*\/]/.test(buttonEntered)) {
+        if (isRecentlyDeleted) {
+            isRecentlyDeleted = false;
+        } else {
+            currentOperation.push(Number(displayText));
+        }
         displayText = buttonEntered;
         display.textContent = displayText;
         currentOperation.push(displayText);
         console.log(currentOperation);
         displayText = "";
-    } else {
+    } else if (/[0-9]/.test(buttonEntered)) {
         if (isTheAnswer === true) {
             displayText = "";
         }
@@ -35,7 +33,30 @@ function updateDisplay(e) {
         display.textContent = displayText;
     }
 
-    
+    switch (buttonEntered) {
+        case "=":
+            currentOperation.push(Number(displayText));
+            console.log(currentOperation);
+            displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]);
+            display.textContent = displayText;
+            currentOperation = [];
+            isTheAnswer = true;
+            break;
+        case "Clear":
+            displayText = "";
+            currentOperation = [];
+            display.textContent = displayText;
+            break;
+        case "Delete":
+            if (/[+\-*\/]/.test(display.textContent)) {
+                isRecentlyDeleted = true;
+                currentOperation.pop();
+                console.log(currentOperation);
+            }
+            displayText = displayText.slice(0, -1);
+            display.textContent = displayText;
+            break;
+    }
 }
 
 // Main operate function -> takes in operator and 2 numbers
