@@ -3,6 +3,7 @@ let displayText = "";
 let currentOperation = [];
 let isTheAnswer = false;
 let isRecentlyDeleted = false;
+let exponentialSuperScript = "";
 let display = document.querySelector("#display");
 let calculatorButtons = document.querySelectorAll(".calculator-button");
 calculatorButtons.forEach((button) => {
@@ -13,7 +14,8 @@ calculatorButtons.forEach((button) => {
 function updateDisplay(e) {
     let buttonEntered = e.target.textContent;
 
-    if (/[+\-x÷]/.test(buttonEntered) || /(xʸ)/.test(buttonEntered)) {
+    // if an operator is entered
+    if (/[+\-x÷]/.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
         if (isRecentlyDeleted) {
             isRecentlyDeleted = false;
         } else {
@@ -24,23 +26,46 @@ function updateDisplay(e) {
         currentOperation.push(displayText);
         console.log(currentOperation);
         displayText = "";
+    // if a number is entered
     } else if (/[0-9]/.test(buttonEntered)) {
         if (isTheAnswer === true) {
             displayText = "";
         }
+        if (currentOperation[1] == "xʸ") {
+            exponentialSuperScript += buttonEntered;
+            let tagBeginIndex = display.innerHTML.indexOf("<");
+            display.innerHTML = display.innerHTML.slice(0, tagBeginIndex) + `<sup>${exponentialSuperScript}</sup>`;
+        } else {
+            displayText += buttonEntered;
+            display.textContent = displayText;
+        }
         isTheAnswer = false;
-        displayText += buttonEntered;
-        display.textContent = displayText;
     }
 
+    // special case switch statement, including special display for exponentials
     switch (buttonEntered) {
+        case "xʸ":
+            if (isRecentlyDeleted) {
+                isRecentlyDeleted = false;
+            } else {
+                currentOperation.push(Number(displayText));
+            }
+            currentOperation.push("xʸ");
+            console.log(currentOperation);
+            display.innerHTML += '<sup>y</sup>';
+            break;
         case "=":
-            currentOperation.push(Number(displayText));
+            if (exponentialSuperScript !== "") {
+                currentOperation.push(Number(exponentialSuperScript));
+            } else {
+                currentOperation.push(Number(displayText));
+            }
             console.log(currentOperation);
             displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]);
             display.textContent = displayText;
             currentOperation = [];
             isTheAnswer = true;
+            exponentialSuperScript = "";
             break;
         case "Clear":
             displayText = "";
@@ -48,13 +73,19 @@ function updateDisplay(e) {
             display.textContent = displayText;
             break;
         case "Delete":
-            if (/[+\-x÷]/.test(display.textContent) || /(xʸ)/.test(display.textContent)) {
+            if (currentOperation[1] == "xʸ") {
+                let tagBeginIndex = display.innerHTML.indexOf("<");
+                display.innerHTML = display.innerHTML.slice(0, tagBeginIndex);
+                exponentialSuperScript = "";
+            } else {
+                displayText = displayText.slice(0, -1);
+                display.textContent = displayText;   
+            }
+            if (/[+\-x÷]/.test(display.textContent) || currentOperation[1] == "xʸ") {
                 isRecentlyDeleted = true;
                 currentOperation.pop();
                 console.log(currentOperation);
-            }
-            displayText = displayText.slice(0, -1);
-            display.textContent = displayText;
+            } 
             break;
     }
 }
