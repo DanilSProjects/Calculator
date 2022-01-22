@@ -61,7 +61,17 @@ function updateDisplay(e) {
                 currentOperation.push(Number(displayText));
             }
             console.log(currentOperation);
-            displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]);
+            
+            // Display results + check for lots of decimals, round if needed
+            let stringResult = String(operate(currentOperation[0], currentOperation[2], currentOperation[1]));
+            let periodIndex = stringResult.indexOf(".");
+            let decimals = stringResult.slice(periodIndex);
+            if (Array.from(decimals).length > 2) {
+                displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]).toFixed(2);
+            } else {
+                displayText = operate(currentOperation[0], currentOperation[2], currentOperation[1]);
+            }
+
             display.textContent = displayText;
             currentOperation = [];
             isTheAnswer = true;
