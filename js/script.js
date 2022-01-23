@@ -48,7 +48,7 @@ function keyPressed(e) {
             buttonEntered = "Clear";
             break;
         case "?":
-            buttonEntered = "Party Button";
+            buttonEntered = "Party";
             break;
     }
     updateDisplay(buttonEntered);
@@ -147,7 +147,7 @@ function updateDisplay(buttonEntered) {
                     display.textContent = displayText;   
                 }
                 break;
-            case "Party Button":
+            case "Party":
                 party.currentTime = 0;
                 party.play();
         }
