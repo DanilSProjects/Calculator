@@ -1,9 +1,13 @@
-// DOM selection of display, buttons + variable declaration for updateDispaly
+// DOM selection of display, buttons + variable declaration for updateDisplay
 let displayText = "";
 let currentOperation = [];
 let isTheAnswer = false;
 let isRecentlyDeleted = false;
 let exponentialSuperScript = "";
+
+let symbolsRegex = /[+\-x÷]/;
+let numbersRegex = /[\.0-9]/;
+
 let display = document.querySelector("#display");
 let calculatorButtons = document.querySelectorAll(".calculator-button");
 calculatorButtons.forEach((button) => {
@@ -15,8 +19,8 @@ function updateDisplay(e) {
     let buttonEntered = e.target.textContent;
 
     // if an operator is entered
-    if (/[+\-x÷]/.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
-        if ((/[+\-x÷]/.test(display.textContent)) || display.innerHTML.includes("<sup>")) {
+    if (symbolsRegex.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
+        if (symbolsRegex.test(display.textContent) || display.innerHTML.includes("<sup>") || symbolsRegex.test(currentOperation[1])) {
             // Don't let the user input more operators
         } else {
             if (isRecentlyDeleted) {
@@ -31,7 +35,7 @@ function updateDisplay(e) {
             displayText = "";
         }
     // if a number is entered
-    } else if (/[\.0-9]/.test(buttonEntered)) {
+    } else if (numbersRegex.test(buttonEntered)) {
         if (isTheAnswer === true) {
             displayText = "";
         }
@@ -51,7 +55,7 @@ function updateDisplay(e) {
     // special case switch statement, including special display for exponentials
     switch (buttonEntered) {
         case "xʸ":
-            if (/[\.0-9]/.test(display.textContent) && display.innerHTML.includes("<sup>") === false) {
+            if (numbersRegex.test(display.textContent) && display.innerHTML.includes("<sup>") === false && symbolsRegex.test(currentOperation[1]) === false) {
                 if (isRecentlyDeleted) {
                     isRecentlyDeleted = false;
                 } else {
@@ -93,19 +97,17 @@ function updateDisplay(e) {
             display.textContent = displayText;
             break;
         case "Delete":
-            if (currentOperation[1] == "xʸ") {
-                let tagBeginIndex = display.innerHTML.indexOf("<");
-                display.innerHTML = display.innerHTML.slice(0, tagBeginIndex);
-                exponentialSuperScript = "";
+            if (symbolsRegex.test(display.textContent) || currentOperation[1] == "xʸ") {
+                exponentialSuperScript = ""
+                isRecentlyDeleted = true;
+                displayText = currentOperation[0];
+                display.textContent = displayText;
+                currentOperation.pop();
+                console.log(currentOperation);
             } else {
                 displayText = displayText.slice(0, -1);
                 display.textContent = displayText;   
             }
-            if (/[+\-x÷]/.test(display.textContent) || currentOperation[1] == "xʸ") {
-                isRecentlyDeleted = true;
-                currentOperation.pop();
-                console.log(currentOperation);
-            } 
             break;
     }
 }
