@@ -58,7 +58,7 @@ function keyPressed(e) {
 function updateDisplay(buttonEntered) {
         // if an operator is entered
         if (symbolsRegex.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
-            if (symbolsRegex.test(display.textContent) || display.innerHTML.includes("<sup>") || symbolsRegex.test(currentOperation[1])) {
+            if (symbolsRegex.test(display.textContent) && numbersRegex.test(display.textContent) === false || display.innerHTML.includes("<sup>") || symbolsRegex.test(currentOperation[1])) {
                 // Don't let the user input more operators
             } else {
                 if (isRecentlyDeleted) {
