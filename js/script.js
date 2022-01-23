@@ -8,6 +8,7 @@ let exponentialSuperScript = "";
 let symbolsRegex = /[+\-x÷]/;
 let numbersRegex = /[\.0-9]/;
 
+let party = document.querySelector('audio');
 let display = document.querySelector("#display");
 let calculatorButtons = document.querySelectorAll(".calculator-button");
 calculatorButtons.forEach((button) => {
@@ -109,6 +110,9 @@ function updateDisplay(e) {
                 display.textContent = displayText;   
             }
             break;
+        case "Party Button":
+            party.currentTime = 0;
+            party.play();
     }
 }
 
