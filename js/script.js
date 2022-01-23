@@ -3,6 +3,7 @@ let displayText = "";
 let currentOperation = [];
 let isTheAnswer = false;
 let isRecentlyDeleted = false;
+let isNegative = false;
 let exponentialSuperScript = "";
 
 let symbolsRegex = /[+\-x÷]/;
@@ -58,7 +59,14 @@ function keyPressed(e) {
 function updateDisplay(buttonEntered) {
         // if an operator is entered
         if (symbolsRegex.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
-            if (symbolsRegex.test(display.textContent) && numbersRegex.test(display.textContent) === false || display.innerHTML.includes("<sup>") || symbolsRegex.test(currentOperation[1])) {
+            isTheAnswer = false;
+            isNegative = false;
+            // Accounting for negative numbers
+            if (buttonEntered === "-" && (display.textContent == "" || (currentOperation[1] !== undefined && currentOperation[2] === undefined))) {
+                isNegative = true;
+                displayText += buttonEntered;
+                display.textContent = displayText;
+            } else if (symbolsRegex.test(display.textContent) && numbersRegex.test(display.textContent) === false || display.innerHTML.includes("<sup>") || symbolsRegex.test(currentOperation[1])) {
                 // Don't let the user input more operators
             } else {
                 if (isRecentlyDeleted) {
@@ -105,6 +113,7 @@ function updateDisplay(buttonEntered) {
                 }
                 break;
             case "=":
+                isNegative = false;
                 if (exponentialSuperScript !== "") {
                     currentOperation.push(Number(exponentialSuperScript));
                 } else {
@@ -130,12 +139,13 @@ function updateDisplay(buttonEntered) {
                 exponentialSuperScript = "";
                 break;
             case "Clear":
+                isNegative = false;
                 displayText = "";
                 currentOperation = [];
                 display.textContent = displayText;
                 break;
             case "Delete":
-                if (symbolsRegex.test(display.textContent) || currentOperation[1] == "xʸ") {
+                if (isNegative === false && symbolsRegex.test(display.textContent) || currentOperation[1] == "xʸ") {
                     exponentialSuperScript = ""
                     isRecentlyDeleted = true;
                     displayText = currentOperation[0];
