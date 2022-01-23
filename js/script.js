@@ -16,16 +16,20 @@ function updateDisplay(e) {
 
     // if an operator is entered
     if (/[+\-x÷]/.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
-        if (isRecentlyDeleted) {
-            isRecentlyDeleted = false;
+        if ((/[+\-x÷]/.test(display.textContent))) {
+            // Don't let the user input more operators
         } else {
-            currentOperation.push(Number(displayText));
+            if (isRecentlyDeleted) {
+                isRecentlyDeleted = false;
+            } else {
+                currentOperation.push(Number(displayText));
+            }
+            displayText = buttonEntered;
+            display.textContent = displayText;
+            currentOperation.push(displayText);
+            console.log(currentOperation);
+            displayText = "";
         }
-        displayText = buttonEntered;
-        display.textContent = displayText;
-        currentOperation.push(displayText);
-        console.log(currentOperation);
-        displayText = "";
     // if a number is entered
     } else if (/[\.0-9]/.test(buttonEntered)) {
         if (isTheAnswer === true) {
@@ -47,14 +51,16 @@ function updateDisplay(e) {
     // special case switch statement, including special display for exponentials
     switch (buttonEntered) {
         case "xʸ":
-            if (isRecentlyDeleted) {
-                isRecentlyDeleted = false;
-            } else {
-                currentOperation.push(Number(displayText));
+            if (/[\.0-9]/.test(display.textContent) && display.innerHTML.includes("<sup>") === false) {
+                if (isRecentlyDeleted) {
+                    isRecentlyDeleted = false;
+                } else {
+                    currentOperation.push(Number(displayText));
+                }
+                currentOperation.push("xʸ");
+                console.log(currentOperation);
+                display.innerHTML += '<sup>y</sup>';
             }
-            currentOperation.push("xʸ");
-            console.log(currentOperation);
-            display.innerHTML += '<sup>y</sup>';
             break;
         case "=":
             if (exponentialSuperScript !== "") {
