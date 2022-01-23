@@ -16,7 +16,7 @@ function updateDisplay(e) {
 
     // if an operator is entered
     if (/[+\-x÷]/.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
-        if ((/[+\-x÷]/.test(display.textContent))) {
+        if ((/[+\-x÷]/.test(display.textContent)) || display.innerHTML.includes("<sup>")) {
             // Don't let the user input more operators
         } else {
             if (isRecentlyDeleted) {
