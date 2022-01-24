@@ -60,15 +60,15 @@ function updateDisplay(buttonEntered) {
         // if an operator is entered
         if (symbolsRegex.test(buttonEntered) && !/(xʸ)/.test(buttonEntered)) {
             isTheAnswer = false;
-            isNegative = false;
             // Accounting for negative numbers
-            if (buttonEntered === "-" && (display.textContent == "" || (currentOperation[1] !== undefined && currentOperation[2] === undefined))) {
+            if (buttonEntered === "-" && isNegative === false && (display.textContent == "" || (currentOperation[1] !== undefined && currentOperation[2] === undefined))) {
                 isNegative = true;
                 displayText += buttonEntered;
                 display.textContent = displayText;
             } else if (symbolsRegex.test(display.textContent) && numbersRegex.test(display.textContent) === false || display.innerHTML.includes("<sup>") || symbolsRegex.test(currentOperation[1])) {
                 // Don't let the user input more operators
             } else {
+                isNegative = false;
                 if (isRecentlyDeleted) {
                     isRecentlyDeleted = false;
                 } else {
